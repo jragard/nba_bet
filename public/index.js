@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
 function populateTeamChoice(game) {
-    // console.log(game);
+  
     let teamChoices = document.getElementById("chooseTeam");
     let team1City = game[0].teamCityName;
     let team2City = game[1].teamCityName;
@@ -39,8 +39,6 @@ function populateTeamChoice(game) {
         }
 
         nonSelection = JSON.parse(nonSelection);
-        // console.log(selection);
-        // console.log(nonSelection);
         selection.selected = true;
         nonSelection.selected = false;
         constructBet(selection, nonSelection);
@@ -48,10 +46,7 @@ function populateTeamChoice(game) {
 }
 
 function constructBet(team, opponentTeam) {
-    // console.log('Chosen Team');
-    // console.log(team);
-    // console.log('Opposing Team');
-    // console.log(opponentTeam);
+
     let betContainer = document.getElementById('bet');
 
     let betInput = document.createElement('input');
@@ -82,24 +77,11 @@ function constructBet(team, opponentTeam) {
     submitBetButton.onclick = () => {
         let bet = betInput.value;
         let address = addressInput.value;
-        // console.log(bet);
-        // console.log(address);
         confirmBet(team, opponentTeam, bet, address);
     }
 
-
     // let tempEthAddress = '0x04bb91796b7d6164c97a859b10da2daf8f5b1e15';
     // let tempOpponentAddress = '0xbd4d8e4be6b70ab33c29759b398c5663d14245d8';
-
-    // let gameID = team.gameId;
-    // let gameDate = team.gameDateEST;
-    // let teamID = team.teamID;
-    // let opponentTeamID = opponentTeam.teamID;
-    // let betAmount = 0.025;
-    // let teamCity = team.teamCityName;
-    // let opponentCity = opponentTeam.teamCityName;
-
-    // contractFunction(tempEthAddress, tempOpponentAddress, gameID, gameDate, teamID, opponentTeamID, betAmount, teamCity, opponentCity);
 }
 
 function confirmBet(chosenTeam, opponentTeam, bet, address) {
@@ -182,10 +164,6 @@ function fetchAndUpdate(url, date) {
    
         for(key in res.data) {
             let gamePair = res.data[key];
-       
-            // let date = gamePair[0].gameDateEST;
-            // let gameID = gamePair[0].gameID;
-            // let gameSequence = gamePair[0].gameSequence;
 
             let homeTeamID = gamePair[0].homeTeamID;
 
@@ -194,7 +172,6 @@ function fetchAndUpdate(url, date) {
             let record1 = gamePair[0].teamWinsLosses;
 
             let city2 = gamePair[1].teamCityName;
-            let teamID2 = gamePair[1].teamID;
             let record2 = gamePair[1].teamWinsLosses;
 
             let homeTeam;
