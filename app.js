@@ -13,17 +13,48 @@ app.use(express.static(publicPath));
 const port = 3000;
 
 // url for a past, completed NBA game. Keep as an example of the data you get after a game is complete
-const workingGameUrl = "https://stats.nba.com/stats/boxscoresummaryv2/?GameID=0021800202";
+// const workingGameUrl = "https://stats.nba.com/stats/boxscoresummaryv2/?GameID=0021800202";
 
 app.get('/fullSchedule', (req, res, next) => {
-    let url = "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json";
+    const url = "http://data.nba.com/data/10s/v2015/json/mobile_teams/nba/2019/league/00_full_schedule.json";
     axios.get(url)
     .then((response) => {
-        console.log(response.data);
-        // let stringResponse = stringify(response);
-        res.json({data: response.data});
-    })
-})
+        const gamesByMonth = [];
+        const allGames = [];
+        const gamesByDate = [];
+        const months = response.data.lscd;
+
+        months.forEach((month, index) => {
+
+            const monthObj = {
+                monthStr: month.mscd.mon,
+                gamesInMonth: {}
+            }
+            const games = month.mscd.g;
+
+            games.forEach((game) => {
+                let date = game.gdte;
+
+                if(monthObj.gamesInMonth[date]) {
+                    monthObj.gamesInMonth[date].push(game);
+                } else {
+                    monthObj.gamesInMonth[date] = [game];
+                }
+                allGames.push(game);
+            });
+
+            gamesByMonth.push(monthObj);
+
+        });
+
+        gamesByMonth.forEach((month) => {
+            for(let key in month.gamesInMonth) {
+                gamesByDate.push(month.gamesInMonth[key]);
+            }
+        });
+        res.json({allGames, gamesByDate});
+    });
+});
 
 // GameID must be 10 digits.  May have to append 0's to front of it.
 app.get('/completed/:gameID', (req, res, next) => {
@@ -105,10 +136,6 @@ app.get('/completed/:gameID', (req, res, next) => {
         console.log(error)
     })
 });
-
-// app.get('/claim', (req, res, next) => {
-
-// })
 
 app.post('/games', (req, res, next) => {
     axios.get(`https://stats.nba.com/stats/scoreboard/?GameDate=${req.body.date}&LeagueID=00&DayOffset=0`)
